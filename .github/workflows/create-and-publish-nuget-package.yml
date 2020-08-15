@@ -26,7 +26,7 @@ jobs:
       run: dotnet build Toolkit
     
     - name: Create package
-      run: dotnet pack --configuration Release Toolkit.csproj
+      run: dotnet pack --configuration Release
       
     - name: Publish package
       run: dotnet nuget push Toolkit/bin/Release/*.nupkg
