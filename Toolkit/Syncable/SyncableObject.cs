@@ -1,0 +1,166 @@
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Toolkit.Behaviour;
+using Toolkit.DataStore;
+
+namespace Toolkit.Syncable
+{
+    /// <inheritdoc/>
+    public abstract class SyncableObject : ISyncableObject
+    {
+        #region Fields
+        private readonly HashSet<string> _modifiedProperties;
+        private readonly Dictionary<string, ICommand> _resetCommands;
+        #endregion
+
+        #region Constructor
+        public SyncableObject()
+        {
+            _modifiedProperties = new HashSet<string>();
+            _resetCommands = new Dictionary<string, ICommand>();
+            IsSynced = true;
+
+            PropertyChanged += OnPropertyChanged;
+
+            SyncCommand = new DelegateCommandAsync(Sync, () => IsSynced);
+            RevertAllCommand = new DelegateCommand(RevertAll, () => !IsSynced);
+        }
+        #endregion
+
+        #region Local methods
+        private void SetSyncStatus()
+        {
+            IsSynced = _modifiedProperties.Count == 0;
+
+            SyncCommand.RaiseCanExecuteChanged();
+            RevertAllCommand.RaiseCanExecuteChanged();
+        }
+
+        private void MarkPropertyModified(string propertyName)
+        {
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                return;
+            }
+
+            _modifiedProperties.Add(propertyName);
+            NotifyPropertyChanged(propertyName);
+        }
+
+        private void MarkPropertyUnmodified(string propertyName)
+        {
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                return;
+            }
+
+            _modifiedProperties.Remove(propertyName);
+            NotifyPropertyChanged(propertyName);
+        }
+
+        private void MarkAllPropertiesUnmodified()
+        {
+            _modifiedProperties.Clear();
+            SetSyncStatus();
+        }
+        #endregion
+
+        #region Implementation : INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            SetSyncStatus();
+        }
+        #endregion
+
+        #region Implementation : ISyncableObject
+        public bool IsSynced { get; private set; }
+
+        public bool IsModified(string propertyName)
+        {
+            return _modifiedProperties.Contains(propertyName);
+        }
+
+        public void SetAndNotify<T>(ref T property, T newValue, [CallerMemberName] string propertyName = "")
+        {
+            if (EqualityComparer<T>.Default.Equals(property, newValue))
+            {
+                return;
+            }
+
+            if (IsSynced)
+            {
+                var currentValue = EqualityComparer<T>.Default.Equals(property, default) ? newValue : property;
+                _resetCommands[propertyName] = new ResetCommand<T>(this, propertyName, currentValue);
+            }
+
+            property = newValue;
+            MarkPropertyModified(propertyName);
+        }
+
+        public void RevertAll()
+        {
+            var modifiedProperties = new List<string>(_modifiedProperties);
+            foreach (var propertyName in modifiedProperties)
+            {
+                Revert(propertyName);
+            }
+        }
+
+        public void Revert(string propertyName)
+        {
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                return;
+            }
+
+            if (_resetCommands.TryGetValue(propertyName, out var resetCommand))
+            {
+                resetCommand.Execute(null);
+                MarkPropertyUnmodified(propertyName);
+            }
+        }
+
+        public async Task<bool> Sync()
+        {
+            using var context = DataContextHandler.CreateContext();
+
+            context.Attach(this);
+
+            foreach (var propertyName in _modifiedProperties)
+            {
+                context
+                    .Entry(this)
+                    .Property(propertyName)
+                    .IsModified = true;
+            }
+
+            var result = await context
+                .SaveChangesAsync()
+                .ConfigureAwait(false);
+
+            if (result > 0)
+            {
+                MarkAllPropertiesUnmodified();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public IToolkitCommand SyncCommand { get; }
+        public IToolkitCommand RevertAllCommand { get; }
+        #endregion
+    }
+}

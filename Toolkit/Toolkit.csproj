@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
+    <OutputType>Library</OutputType>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Ole Wiedemann</Authors>
+    <Company>Wiedemann Systeme &amp; Software</Company>
+    <Product>WPF_EFCore_Toolkit</Product>
+    <Description>A small toolkit for applications which utilize the EntityFrameworkCore and WPF frameworks.</Description>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageTags>WPF EFCore Toolkit</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.7" />
+  </ItemGroup>
+
+</Project>
