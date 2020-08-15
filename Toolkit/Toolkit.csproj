@@ -4,13 +4,14 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
     <OutputType>Library</OutputType>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>Ole Wiedemann</Authors>
     <Company>Wiedemann Systeme &amp; Software</Company>
     <Product>WPF_EFCore_Toolkit</Product>
     <Description>A small toolkit for applications which utilize the EntityFrameworkCore and WPF frameworks.</Description>
     <PackageTags>WPF EFCore Toolkit</PackageTags>
     <PackageIcon>icon.png</PackageIcon>
+    <RepositoryUrl>https://github.com/w-syss/EFCore-WPF-Toolkit</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
