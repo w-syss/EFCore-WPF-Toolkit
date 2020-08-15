@@ -9,12 +9,19 @@
     <Company>Wiedemann Systeme &amp; Software</Company>
     <Product>WPF_EFCore_Toolkit</Product>
     <Description>A small toolkit for applications which utilize the EntityFrameworkCore and WPF frameworks.</Description>
-    <PackageIcon>icon.png</PackageIcon>
     <PackageTags>WPF EFCore Toolkit</PackageTags>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.7" />
   </ItemGroup>
 
-</Project>
+  <ItemGroup>
+    <None Include="Resources\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  </Project>
