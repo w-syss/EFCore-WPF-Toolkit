@@ -3,8 +3,6 @@ name: Create and publish NuGet Package
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
   build:
@@ -26,15 +24,7 @@ jobs:
       run: dotnet build Toolkit
     
     - name: Create package
-      run: dotnet pack --configuration Release
+      run: dotnet pack --configuration Release Toolkit
       
     - name: Publish package
       run: dotnet nuget push Toolkit/bin/Release/*.nupkg
-     
-    
-    
-    
-    
-    
-
-    
