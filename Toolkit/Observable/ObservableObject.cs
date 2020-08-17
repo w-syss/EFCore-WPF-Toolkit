@@ -13,14 +13,14 @@ namespace Toolkit.Observable
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public virtual void SetAndNotify<T>(ref T property, T newValue, [CallerMemberName] string propertyName = "")
+        public virtual void SetAndNotify<T>(ref T backingField, T newValue, [CallerMemberName] string propertyName = "")
         {
-            if (EqualityComparer<T>.Default.Equals(property, newValue))
+            if (EqualityComparer<T>.Default.Equals(backingField, newValue))
             {
                 return;
             }
 
-            property = newValue;
+            backingField = newValue;
             NotifyPropertyChanged(propertyName);
         }
     }

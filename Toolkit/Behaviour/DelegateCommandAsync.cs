@@ -5,7 +5,7 @@ using Toolkit.Extensions;
 
 namespace Toolkit.Behaviour
 {
-    public class DelegateCommandAsync : ICommandAsync
+    public sealed class DelegateCommandAsync : ICommandAsync
     {
         #region Fields
         private bool _isExecuting;
@@ -89,7 +89,7 @@ namespace Toolkit.Behaviour
         #endregion
 
         #region Implementation : IToolkitCommand
-        public void RaiseCanExecuteChanged()
+        public void TriggerCanExecuteChanged()
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }

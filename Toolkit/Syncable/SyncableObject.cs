@@ -14,14 +14,14 @@ namespace Toolkit.Syncable
     {
         #region Fields
         private readonly HashSet<string> _modifiedProperties;
-        private readonly Dictionary<string, ICommand> _resetCommands;
+        private readonly Dictionary<string, IResetAction> _resetCommands;
         #endregion
 
         #region Constructor
         public SyncableObject()
         {
             _modifiedProperties = new HashSet<string>();
-            _resetCommands = new Dictionary<string, ICommand>();
+            _resetCommands = new Dictionary<string, IResetAction>();
             IsSynced = true;
 
             PropertyChanged += OnPropertyChanged;
@@ -36,8 +36,8 @@ namespace Toolkit.Syncable
         {
             IsSynced = _modifiedProperties.Count == 0;
 
-            SyncCommand.RaiseCanExecuteChanged();
-            RevertAllCommand.RaiseCanExecuteChanged();
+            SyncCommand.TriggerCanExecuteChanged();
+            RevertAllCommand.TriggerCanExecuteChanged();
         }
 
         private void MarkPropertyModified(string propertyName)
@@ -85,7 +85,7 @@ namespace Toolkit.Syncable
             if (IsSynced)
             {
                 var currentValue = EqualityComparer<T>.Default.Equals(property, default) ? newValue : property;
-                _resetCommands[propertyName] = new ResetCommand<T>(this, propertyName, currentValue);
+                _resetCommands[propertyName] = new DefaultResetAction<T>(this, propertyName, currentValue);
             }
 
             property = newValue;
@@ -119,7 +119,7 @@ namespace Toolkit.Syncable
 
             if (_resetCommands.TryGetValue(propertyName, out var resetCommand))
             {
-                resetCommand.Execute(null);
+                resetCommand.ResetProperty();
                 MarkPropertyUnmodified(propertyName);
             }
         }

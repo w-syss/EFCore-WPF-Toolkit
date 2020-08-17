@@ -2,7 +2,7 @@
 
 namespace Toolkit.Behaviour
 {
-    public class DelegateCommand : IToolkitCommand
+    public sealed class DelegateCommand : IToolkitCommand
     {
         private readonly Func<bool> _canExecute;
         private readonly Action _action;
@@ -36,7 +36,7 @@ namespace Toolkit.Behaviour
         #endregion
 
         #region Implementation : IToolkitCommand
-        public void RaiseCanExecuteChanged()
+        public void TriggerCanExecuteChanged()
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }

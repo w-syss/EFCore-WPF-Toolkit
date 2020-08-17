@@ -4,6 +4,6 @@ namespace Toolkit.Behaviour
 {
     public interface IToolkitCommand : ICommand
     {
-        void RaiseCanExecuteChanged();
+        void TriggerCanExecuteChanged();
     }
 }
