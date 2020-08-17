@@ -87,7 +87,7 @@ namespace Toolkit.Syncable
             set
             {
                 var selectionEventArgs = new SelectionChangedEventArgs();
-                SelectedItemChanging.Invoke(SelectedItem, selectionEventArgs);
+                SelectedItemChanging?.Invoke(SelectedItem, selectionEventArgs);
                 if (selectionEventArgs.CancelSelectionChange)
                 {
                     return;
