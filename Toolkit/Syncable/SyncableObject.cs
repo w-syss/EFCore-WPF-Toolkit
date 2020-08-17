@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Toolkit.Behaviour;
 using Toolkit.DataStore;
+using Toolkit.Observable;
 
 namespace Toolkit.Syncable
 {
     /// <inheritdoc/>
-    public abstract class SyncableObject : ISyncableObject
+    public abstract class SyncableObject : ObservableObject, ISyncableObject
     {
         #region Fields
         private readonly HashSet<string> _modifiedProperties;
@@ -66,31 +67,15 @@ namespace Toolkit.Syncable
             _modifiedProperties.Clear();
             SetSyncStatus();
         }
-        #endregion
 
-        #region Implementation : INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             SetSyncStatus();
         }
         #endregion
 
-        #region Implementation : ISyncableObject
-        public bool IsSynced { get; private set; }
-
-        public bool IsModified(string propertyName)
-        {
-            return _modifiedProperties.Contains(propertyName);
-        }
-
-        public void SetAndNotify<T>(ref T property, T newValue, [CallerMemberName] string propertyName = "")
+        #region Overrides : ObservableObject
+        public override void SetAndNotify<T>(ref T property, T newValue, [CallerMemberName] string propertyName = "")
         {
             if (EqualityComparer<T>.Default.Equals(property, newValue))
             {
@@ -105,6 +90,15 @@ namespace Toolkit.Syncable
 
             property = newValue;
             MarkPropertyModified(propertyName);
+        }
+        #endregion
+
+        #region Implementation : ISyncableObject
+        public bool IsSynced { get; private set; }
+
+        public bool IsModified(string propertyName)
+        {
+            return _modifiedProperties.Contains(propertyName);
         }
 
         public void RevertAll()

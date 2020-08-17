@@ -5,23 +5,12 @@ using Toolkit.Behaviour;
 
 namespace Toolkit.Syncable
 {
+    /// <summary>
+    /// Provides functionality to synchronize data to an external datastore
+    /// and notification of changes made to the object.
+    /// </summary>
     public interface ISyncableObject : INotifyPropertyChanged
     {
-        ///
-        /// <summary>
-        /// Set the <paramref name="newValue"/> to the <paramref name="property"/>
-        /// and notify others of the change by invoking the <cref name="PropertyChanged"/> event.
-        /// </summary>
-        ///
-        /// <param name="property">Reference to the backing field of the property.</param>
-        /// <param name="newValue">The new value.</param>
-        /// <param name="propertyName">
-        /// Name of the changed property. This can be omitted, since the name
-        /// will be resolved as the via the compiler name service./>.
-        /// </param>
-        ///
-        void SetAndNotify<T>(ref T property, T newValue, string propertyName);
-
         ///
         /// <summary>
         /// Attempt to asynchronously write the changes made
