@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Windows.Input;
 
 namespace Toolkit.Syncable
 {
-    public class ResetCommand<T> : ICommand
+    public class DefaultResetAction<T> : IResetAction
     {
         private readonly Action _undoAction;
 
-        public ResetCommand(object target, string propertyName, T oldValue)
+        public DefaultResetAction(object target, string propertyName, T oldValue)
         {
             if (target is null)
             {
@@ -28,14 +27,7 @@ namespace Toolkit.Syncable
         }
 
         #region Implementation : ICommand
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
-
-        public void Execute(object parameter)
+        public void ResetProperty()
         {
             _undoAction.Invoke();
         }
