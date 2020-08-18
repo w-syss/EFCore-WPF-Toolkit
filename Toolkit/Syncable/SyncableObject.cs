@@ -25,7 +25,7 @@ namespace Toolkit.Syncable
 
             PropertyChanged += OnPropertyChanged;
 
-            SyncCommand = new DelegateCommandAsync(Sync, () => IsSynced);
+            SyncCommand = new DelegateCommandAsync(Sync, () => !IsSynced);
             RevertAllCommand = new DelegateCommand(RevertAll, () => !IsSynced);
         }
         #endregion
@@ -41,24 +41,12 @@ namespace Toolkit.Syncable
 
         private void MarkPropertyModified(string propertyName)
         {
-            if (string.IsNullOrEmpty(propertyName))
-            {
-                return;
-            }
-
             _modifiedProperties.Add(propertyName);
-            NotifyPropertyChanged(propertyName);
         }
 
         private void MarkPropertyUnmodified(string propertyName)
         {
-            if (string.IsNullOrEmpty(propertyName))
-            {
-                return;
-            }
-
             _modifiedProperties.Remove(propertyName);
-            NotifyPropertyChanged(propertyName);
         }
 
         private void MarkAllPropertiesUnmodified()
@@ -81,14 +69,16 @@ namespace Toolkit.Syncable
                 return;
             }
 
+            var currentValue = EqualityComparer<T>.Default.Equals(property, default) ? newValue : property;
+            _resetCommands[propertyName] = new DefaultResetAction<T>(this, propertyName, currentValue);
+            
             if (IsSynced)
             {
-                var currentValue = EqualityComparer<T>.Default.Equals(property, default) ? newValue : property;
-                _resetCommands[propertyName] = new DefaultResetAction<T>(this, propertyName, currentValue);
+                MarkPropertyModified(propertyName);
             }
 
             property = newValue;
-            MarkPropertyModified(propertyName);
+            NotifyPropertyChanged(propertyName);
         }
         #endregion
 
@@ -120,6 +110,7 @@ namespace Toolkit.Syncable
             {
                 resetCommand.ResetProperty();
                 MarkPropertyUnmodified(propertyName);
+                NotifyPropertyChanged(propertyName);
             }
         }
 
