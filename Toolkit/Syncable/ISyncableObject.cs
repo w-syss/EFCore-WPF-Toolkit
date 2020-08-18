@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using Toolkit.Behaviour;
+using Toolkit.Observable;
 
 namespace Toolkit.Syncable
 {
@@ -9,7 +9,7 @@ namespace Toolkit.Syncable
     /// Provides functionality to synchronize data to an external datastore
     /// and notification of changes made to the object.
     /// </summary>
-    public interface ISyncableObject : INotifyPropertyChanged
+    public interface ISyncableObject : IObservable
     {
         ///
         /// <summary>

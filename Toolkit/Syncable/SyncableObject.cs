@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Toolkit.Behaviour;
 using Toolkit.DataStore;
 using Toolkit.Observable;
