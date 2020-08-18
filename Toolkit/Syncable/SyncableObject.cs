@@ -72,7 +72,7 @@ namespace Toolkit.Syncable
             var currentValue = EqualityComparer<T>.Default.Equals(property, default) ? newValue : property;
             _resetCommands[propertyName] = new DefaultResetAction<T>(this, propertyName, currentValue);
             
-            if (IsSynced)
+            if (!IsModified(propertyName))
             {
                 MarkPropertyModified(propertyName);
             }
