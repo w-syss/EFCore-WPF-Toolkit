@@ -4,7 +4,7 @@ namespace Toolkit.Syncable
 {
     public class DefaultResetAction<T> : IResetAction
     {
-        private readonly Action _undoAction;
+        private readonly Action _resetAction;
 
         public DefaultResetAction(object target, string propertyName, T oldValue)
         {
@@ -23,13 +23,13 @@ namespace Toolkit.Syncable
                 .GetProperty(propertyName)?
                 .GetSetMethod() ?? throw new ArgumentException($"Public property with name {propertyName} doesn't exist.");
 
-            _undoAction = () => setter.Invoke(target, new object[] { oldValue });
+            _resetAction = () => setter.Invoke(target, new object[] { oldValue });
         }
 
         #region Implementation : ICommand
         public void ResetProperty()
         {
-            _undoAction.Invoke();
+            _resetAction.Invoke();
         }
         #endregion
     }

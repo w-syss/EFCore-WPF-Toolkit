@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace Toolkit.Syncable
+namespace Toolkit.Observable
 {
-    public interface ISyncableObjectCollection<T> : IEnumerable<T>, ICollection<T>
+    public interface IObservableObjectCollection<T> : IEnumerable<T>, ICollection<T>
     {
         #region Collection
         public ICollectionView CollectionView { get; }

@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace Toolkit.Syncable
+namespace Toolkit.Observable
 {
-    public class SelectionChangedEventArgs : EventArgs
+    public class SelectionChangingEventArgs : EventArgs
     {
         public bool CancelSelectionChange { get; set; }
 
-        public SelectionChangedEventArgs()
+        public SelectionChangingEventArgs()
         {
             CancelSelectionChange = false;
         }
