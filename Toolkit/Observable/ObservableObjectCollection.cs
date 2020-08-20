@@ -95,9 +95,9 @@ namespace Toolkit.Observable
                 if (!EqualityComparer<T>.Default.Equals(value, default))
                 {
                     CollectionView.MoveCurrentTo(value);
-                    NotifyPropertyChanged();
                     SelectedItemChanged?.Invoke(SelectedItem);
                 }
+                NotifyPropertyChanged();
             }
         }
 
