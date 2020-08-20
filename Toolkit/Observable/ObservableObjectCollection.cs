@@ -166,6 +166,8 @@ namespace Toolkit.Observable
                 throw new ArgumentNullException(nameof(item));
             }
 
+            var currentlySelectedItemRemoved = SelectedItem.Equals(item);
+
             lock (_collectionLock)
             {
                 if (!_baseCollection.Contains(item))
@@ -180,6 +182,11 @@ namespace Toolkit.Observable
 
             item.PropertyChanged -= (s, o) => ItemChanged?.Invoke(item);
             ItemRemoved?.Invoke(item);
+
+            if (currentlySelectedItemRemoved)
+            {
+                SelectedItemChanged?.Invoke(SelectedItem);
+            }
 
             return true;
         }
